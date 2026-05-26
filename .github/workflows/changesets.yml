@@ -1,41 +1,42 @@
 name: release-changesets
 
 on:
-   push:
-      branches:
-         - main
+  push:
+    branches:
+       - main
 
+       - master
 permissions:
-   contents: write
-   id-token: write
-   pull-requests: write
+  contents: write
+  id-token: write
+  pull-requests: write
 
 jobs:
-   release:
-      runs-on: ubuntu-latest
-      environment: npm
-      if: github.repository == 'steveukx/git-js'
-      steps:
-         - name: Environment Check
-           run: |
-              echo "ON_NPM_ENV=${ON_NPM_ENV}."
+  release:
+    runs-on: ubuntu-24.04
+    environment: npm
+    if: github.repository == 'steveukx/git-js'
+    steps:
+       - name: Environment Check
+         run: |
+           echo "ON_NPM_ENV=${ON_NPM_ENV}."
 
-         - uses: actions/checkout@v6
-           with:
-              fetch-depth: 0
+       - uses: actions/checkout@v6
+         with:
+           fetch-depth: 0
 
-         - uses: actions/setup-node@v6
-           with:
-              cache: yarn
-              node-version: 24
+       - uses: actions/setup-node@v6
+         with:
+           cache: yarn
+           node-version: 24
 
-         - run: yarn install --immutable
-         - run: yarn build
+       - run: yarn install --immutable
+       - run: yarn build
 
-         - uses: changesets/action@v1
-           with:
-              publish: yarn changeset publish
-           env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              NPM_CONFIG_PROVENANCE: true
-              npm_config_registry: "https://registry.npmjs.org"
+       - uses: changesets/action@v1
+         with:
+           publish: yarn changeset publish
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           NPM_CONFIG_PROVENANCE: true
+           npm_config_registry: https://registry.npmjs.org
